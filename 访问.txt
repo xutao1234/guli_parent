@@ -1,0 +1,24 @@
+1、端口号：
+	edu：8001，
+	oss：8002，
+	vod：8003
+
+2、swagger访问地址：http://localhost:8001/8002/8003/swagger-ui.html
+
+3、nginx开放端口号：9001
+
+4、下载nacos，在解压后的bin目录中启动（windows下双击startup.cmd，linux下运行startup.sh）
+     nacos访问地址：http://localhost:8848/nacos/#/login    用户名密码：nacos/nacos
+     引入nacos依赖包，在需要注册到注册中心的服务块中加入注册地址，在启动类上加上@EnableDiscoveryClient注解
+
+5、使用Feign远程调用
+     引入Feign依赖包，在服务启动类上加入@EnableFeignClients注解
+     在服务调用方创建接口类，加上@Component注入到Spring中，再加上@FeignCient注解，引入服务提供方服务名称
+     在接口类中创建的方法中的@PathVariable("id")后必须加入参数，不然会出问题
+
+6、hystrix熔断
+     引入hystrix依赖包，修改服务调用方配置文件，开启hystrix服务
+         feign.hystrix.enabled=true
+         hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=6000
+      修改服务调用方的远程调用接口类，在@FeignClient注解中加入fallback=远程调用接口类的实现类
+      接口实现类注入Spring，加入@Component注解
